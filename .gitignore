@@ -4,6 +4,9 @@
 # Build folder
 build/
 
+# Shaders
+*.spv
+
 # Prerequisites
 *.d
 
