@@ -5,24 +5,24 @@
 #include <string>
 
 namespace vdem {
+  class VdemWindow {
+  public:
+    VdemWindow(int w, int h, std::string name);
+    ~VdemWindow();
 
-    class VdemWindow {
-    public:
-        VdemWindow(int w, int h, std::string name);
-        ~VdemWindow();
+    VdemWindow(const VdemWindow&) = delete;
+    VdemWindow& operator=(const VdemWindow&) = delete;
 
-        VdemWindow(const VdemWindow&) = delete;
-        VdemWindow& operator=(const VdemWindow&) = delete;
+    bool shouldClose() { return glfwWindowShouldClose(window); }
+    void createWindowSurface(VkInstance instance, VkSurfaceKHR *surface);
 
-        bool shouldClose() { return glfwWindowShouldClose(window); }
+  private:
+    void init_window();
 
-    private:
-        void init_window();
+    const int width;
+    const int height;
 
-        const int width;
-        const int height;
-
-        std::string windowName;
-        GLFWwindow *window;
-    };
+    std::string windowName;
+    GLFWwindow *window;
+  };
 }
