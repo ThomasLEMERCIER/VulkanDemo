@@ -2,7 +2,8 @@
 .vscode/
 
 # Build folder
-build/
+Debug/
+Release/
 
 # Shaders
 *.spv
@@ -39,3 +40,4 @@ build/
 *.exe
 *.out
 *.app
+*.ps1

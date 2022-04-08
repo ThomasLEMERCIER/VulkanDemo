@@ -7,7 +7,20 @@
 
 namespace vdem {
 
-  struct PipelineConfigInfo {};
+  struct PipelineConfigInfo {
+    VkViewport viewport;
+    VkRect2D scissor;
+    VkPipelineViewportStateCreateInfo viewportInfo;
+    VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo;
+    VkPipelineRasterizationStateCreateInfo rasterizationInfo;
+    VkPipelineMultisampleStateCreateInfo multisampleInfo;
+    VkPipelineColorBlendAttachmentState colorBlendAttachment;
+    VkPipelineColorBlendStateCreateInfo colorBlendInfo;
+    VkPipelineDepthStencilStateCreateInfo depthStencilInfo;
+    VkPipelineLayout pipelineLayout = nullptr;
+    VkRenderPass renderPass = nullptr;
+    uint32_t subpass = 0;
+  };
 
   class VdemPipeline {
   public:
@@ -16,7 +29,7 @@ namespace vdem {
     const std::string& vertexShaderPath, 
     const std::string& fragmentShaderPath, 
     const PipelineConfigInfo& configInfo);
-    ~VdemPipeline() {};
+    ~VdemPipeline();
 
     VdemPipeline(const VdemPipeline&) = delete;
     VdemPipeline& operator=(const VdemPipeline&) = delete;

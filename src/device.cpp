@@ -53,6 +53,13 @@ namespace vdem {
     pickPhysicalDevice();
     createLogicalDevice();
     createCommandPool();
+
+    if (enableValidationLayers) {
+      std::cout << "validation layers enabled" << std::endl;
+    } else {
+      std::cout << "validation layers disabled" << std::endl;
+    }
+
   }
 
   VdemDevice::~VdemDevice() {

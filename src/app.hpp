@@ -18,8 +18,8 @@ namespace vdem {
     VdemDevice device{window};
     VdemPipeline pipeline{
       device,
-      "../shaders/simple_shader.vert.spv",
-      "../shaders/simple_shader.frag.spv",
+      "shaders/simple_shader.vert.spv",
+      "shaders/simple_shader.frag.spv",
       VdemPipeline::defaultPipelineConfigInfo(WIDTH, HEIGHT)};
 
   };
