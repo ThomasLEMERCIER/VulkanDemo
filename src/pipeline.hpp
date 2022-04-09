@@ -8,9 +8,12 @@
 namespace vdem {
 
   struct PipelineConfigInfo {
+    PipelineConfigInfo() = default;
+    PipelineConfigInfo(const PipelineConfigInfo&) = delete;
+    PipelineConfigInfo& operator=(const PipelineConfigInfo&) = delete;
+
     VkViewport viewport;
     VkRect2D scissor;
-    VkPipelineViewportStateCreateInfo viewportInfo;
     VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo;
     VkPipelineRasterizationStateCreateInfo rasterizationInfo;
     VkPipelineMultisampleStateCreateInfo multisampleInfo;
@@ -25,16 +28,17 @@ namespace vdem {
   class VdemPipeline {
   public:
     VdemPipeline(
-    VdemDevice& device,
-    const std::string& vertexShaderPath, 
-    const std::string& fragmentShaderPath, 
-    const PipelineConfigInfo& configInfo);
+      VdemDevice& device,
+      const std::string& vertexShaderPath, 
+      const std::string& fragmentShaderPath, 
+      const PipelineConfigInfo& configInfo);
     ~VdemPipeline();
 
     VdemPipeline(const VdemPipeline&) = delete;
     VdemPipeline& operator=(const VdemPipeline&) = delete;
 
-    static PipelineConfigInfo defaultPipelineConfigInfo(uint32_t width, uint32_t height);
+    void bind(VkCommandBuffer commandBuffer);
+    static void defaultPipelineConfigInfo(PipelineConfigInfo& configInfo, uint32_t width, uint32_t height);
 
   private:
     static std::vector<char> readFile(const std::string& filePath);
