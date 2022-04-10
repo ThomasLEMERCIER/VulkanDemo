@@ -1,4 +1,5 @@
 #include "app.hpp"
+#include "sierpinski.hpp"
 
 #include <stdexcept>
 #include <array>
@@ -16,11 +17,8 @@ namespace vdem {
   }
 
   void App::loadModel() {
-    std::vector<VdemModel::Vertex> vertices = {
-      {{0.f, -0.5f}},
-      {{ 0.5f,  0.5f}},
-      {{-0.5f,  0.5f}}
-    };
+    std::vector<VdemModel::Vertex> vertices = {};
+    populate_vertices(vertices, 5, -0.75, 0.75, 1.5);
     model = std::make_unique<VdemModel>(device, vertices);
   }
 
