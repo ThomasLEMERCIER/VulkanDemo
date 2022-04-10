@@ -4,6 +4,7 @@
 #include "pipeline.hpp"
 #include "device.hpp"
 #include "swap_chain.hpp"
+#include "model.hpp"
 
 #include <memory>
 
@@ -23,6 +24,7 @@ namespace vdem {
     void run();
 
   private:
+    void loadModel();
     void createPipelineLayout();
     void createPipeline();
     void createCommandBuffers();
@@ -34,5 +36,6 @@ namespace vdem {
     std::unique_ptr<VdemPipeline> pipeline;
     VkPipelineLayout pipelineLayout;
     std::vector<VkCommandBuffer> commandBuffers;
+    std::unique_ptr<VdemModel> model;
   };
 }

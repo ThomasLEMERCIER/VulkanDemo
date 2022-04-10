@@ -5,6 +5,7 @@
 
 namespace vdem {
   App::App() {
+    loadModel();
     createPipelineLayout();
     createPipeline();
     createCommandBuffers();
@@ -12,6 +13,15 @@ namespace vdem {
 
   App::~App() {
     vkDestroyPipelineLayout(device.device(), pipelineLayout, nullptr);  
+  }
+
+  void App::loadModel() {
+    std::vector<VdemModel::Vertex> vertices = {
+      {{0.f, -0.5f}},
+      {{ 0.5f,  0.5f}},
+      {{-0.5f,  0.5f}}
+    };
+    model = std::make_unique<VdemModel>(device, vertices);
   }
 
   void App::run() {
@@ -83,7 +93,9 @@ namespace vdem {
       vkCmdBeginRenderPass(commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
       
       pipeline->bind(commandBuffers[i]);
-      vkCmdDraw(commandBuffers[i], 3, 1, 0, 0);
+      model->bind(commandBuffers[i]);
+      model->draw(commandBuffers[i]);
+
 
       vkCmdEndRenderPass(commandBuffers[i]);
       if (vkEndCommandBuffer(commandBuffers[i]) != VK_SUCCESS) {
