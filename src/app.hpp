@@ -28,11 +28,14 @@ namespace vdem {
     void createPipelineLayout();
     void createPipeline();
     void createCommandBuffers();
+    void freeCommandBuffers();
     void drawFrame();
+    void recreateSwapChain();
+    void recordCommandBuffer(uint32_t index);
 
     VdemWindow window{WIDTH, HEIGHT, "Vulkan Demo"};
     VdemDevice device{window};
-    VdemSwapChain swapChain{device, window.getExtent()};
+    std::unique_ptr<VdemSwapChain> swapChain;
     std::unique_ptr<VdemPipeline> pipeline;
     VkPipelineLayout pipelineLayout;
     std::vector<VkCommandBuffer> commandBuffers;

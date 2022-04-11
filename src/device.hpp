@@ -34,8 +34,6 @@ namespace vdem {
     ~VdemDevice();
 
     // Not copyable or movable
-    VdemDevice(const VdemDevice &) = delete;
-    void operator=(const VdemDevice &) = delete;
     VdemDevice(VdemDevice &&) = delete;
     VdemDevice &operator=(VdemDevice &&) = delete;
 

@@ -15,13 +15,18 @@ namespace vdem {
 
     bool shouldClose() { return glfwWindowShouldClose(window); }
     VkExtent2D getExtent() { return {(uint32_t)width, (uint32_t)height}; }
+    bool wasWindowResized() { return framebufferResized; }
+    void resetWindowResized() { framebufferResized = false; }
+
     void createWindowSurface(VkInstance instance, VkSurfaceKHR *surface);
 
   private:
+    static void framebufferResizeCallback(GLFWwindow* window, int width, int height);
     void init_window();
 
-    const int width;
-    const int height;
+    int width;
+    int height;
+    bool framebufferResized = false;
 
     std::string windowName;
     GLFWwindow *window;
