@@ -4,7 +4,17 @@
 #include <stdexcept>
 #include <array>
 
+#define GLM_FORCE_RADIANS
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#include <glm/glm.hpp>
+
+
 namespace vdem {
+  struct SimplePushConstantsData {
+    glm::vec2 offset;
+    alignas(16) glm::vec3 color;
+  };
+  
   App::App() {
     loadModel();
     createPipelineLayout();
@@ -17,8 +27,8 @@ namespace vdem {
   }
 
   void App::loadModel() {
-    std::vector<VdemModel::Vertex> vertices = {};
-    populate_vertices(vertices, 1, -0.75, 0.75, 1.5);
+    std::vector<VdemModel::Vertex> vertices = {{{-0.5f, 0.5f}, {1.f, 0.f, 0.f}}, {{0.f, -0.5f}, {1.f, 0.f, 0.f}}, {{0.5f, 0.5f}, {1.f, 0.f, 0.f}}};
+    //populate_vertices(vertices, 1, -0.75, 0.75, 1.5);
     model = std::make_unique<VdemModel>(device, vertices);
   }
 
@@ -32,12 +42,17 @@ namespace vdem {
   }
 
   void App::createPipelineLayout() {
+    VkPushConstantRange pushConstantRange = {};
+    pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
+    pushConstantRange.offset = 0;
+    pushConstantRange.size = sizeof(SimplePushConstantsData);
+
     VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
     pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
     pipelineLayoutInfo.setLayoutCount = 0;
     pipelineLayoutInfo.pSetLayouts = nullptr;
-    pipelineLayoutInfo.pushConstantRangeCount = 0;
-    pipelineLayoutInfo.pPushConstantRanges = nullptr;
+    pipelineLayoutInfo.pushConstantRangeCount = 1;
+    pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
 
     if (vkCreatePipelineLayout(device.device(), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
       throw std::runtime_error("failed to create pipeline layout!");
@@ -102,6 +117,10 @@ namespace vdem {
   }
 
   void App::recordCommandBuffer(uint32_t index) {
+    static int frame = 0;
+    frame = (frame + 1) % 60;
+
+
     VkCommandBufferBeginInfo beginInfo = {};
     beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
@@ -118,7 +137,7 @@ namespace vdem {
     renderPassInfo.renderArea.extent = swapChain->getSwapChainExtent();
 
     std::array<VkClearValue, 2> clearValues = {};
-    clearValues[0].color = { 0.0f, 0.0f, 0.0f, 1.0f };
+    clearValues[0].color = { 0.01f, 0.01f, 0.01f, 1.0f };
     clearValues[1].depthStencil = { 1.0f, 0 };
     renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
     renderPassInfo.pClearValues = clearValues.data();
@@ -138,7 +157,22 @@ namespace vdem {
     
     pipeline->bind(commandBuffers[index]);
     model->bind(commandBuffers[index]);
-    model->draw(commandBuffers[index]);
+
+    for (int j = 0; j < 4; j++) {
+      SimplePushConstantsData push{};
+      push.offset = { -0.5f + frame * 0.02f, -0.4f + j * 0.25f };
+      push.color = { 0.0f, 0.0f, 0.2f + j * 0.2f };
+
+      vkCmdPushConstants(
+        commandBuffers[index], 
+        pipelineLayout, 
+        VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 
+        0, 
+        sizeof(SimplePushConstantsData), 
+        &push);
+      model->draw(commandBuffers[index]);
+    }
+
 
     vkCmdEndRenderPass(commandBuffers[index]);
     if (vkEndCommandBuffer(commandBuffers[index]) != VK_SUCCESS) {
