@@ -1,11 +1,9 @@
 #pragma once
 
-#include "window.hpp"
-#include "pipeline.hpp"
 #include "device.hpp"
-#include "swap_chain.hpp"
-#include "model.hpp"
 #include "game_object.hpp"
+#include "window.hpp"
+#include "renderer.hpp"
 
 #include <memory>
 
@@ -26,21 +24,11 @@ namespace vdem {
 
   private:
     void loadGameObjects();
-    void createPipelineLayout();
-    void createPipeline();
-    void createCommandBuffers();
-    void freeCommandBuffers();
-    void drawFrame();
-    void recreateSwapChain();
-    void recordCommandBuffer(uint32_t index);
-    void renderGameObjects(VkCommandBuffer commandBuffer);
 
     VdemWindow window{WIDTH, HEIGHT, "Vulkan Demo"};
     VdemDevice device{window};
-    std::unique_ptr<VdemSwapChain> swapChain;
-    std::unique_ptr<VdemPipeline> pipeline;
-    VkPipelineLayout pipelineLayout;
-    std::vector<VkCommandBuffer> commandBuffers;
+    VdemRenderer renderer{window, device};
+
     std::vector<VdemGameObject> gameObjects;
   };
 }

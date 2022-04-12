@@ -1,3 +1,5 @@
+#pragma once
+
 #include "model.hpp"
 
 void populate_vertices(std::vector<vdem::VdemModel::Vertex>& vertices, int depth, float x, float y, float size) {
