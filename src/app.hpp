@@ -30,5 +30,7 @@ namespace vdem {
     VdemRenderer renderer{window, device};
 
     std::vector<VdemGameObject> gameObjects;
+
+    float MAX_FRAME_TIME = 1.f;
   };
 }

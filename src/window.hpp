@@ -17,6 +17,7 @@ namespace vdem {
     VkExtent2D getExtent() { return {(uint32_t)width, (uint32_t)height}; }
     bool wasWindowResized() { return framebufferResized; }
     void resetWindowResized() { framebufferResized = false; }
+    GLFWwindow *getGLFWwindow() const { return window; }
 
     void createWindowSurface(VkInstance instance, VkSurfaceKHR *surface);
 
