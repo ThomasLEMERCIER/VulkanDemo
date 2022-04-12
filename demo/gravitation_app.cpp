@@ -15,6 +15,12 @@
 
 namespace vdem {
 
+  // Should be added into GameObject definition
+  //   struct RigidBody2dComponent {
+  //    glm::vec2 velocity;
+  //    float mass{1.0f};
+  //  };
+
 class GravityPhysicsSystem {
  public:
   GravityPhysicsSystem(float strength) : strengthGravity{strength} {}

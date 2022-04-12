@@ -3,6 +3,7 @@
 #include "device.hpp"
 #include "game_object.hpp"
 #include "pipeline.hpp"
+#include "camera.hpp"
 
 #include <memory>
 
@@ -17,7 +18,10 @@ namespace vdem {
     SimpleRenderSystem(const SimpleRenderSystem&) = delete;
     SimpleRenderSystem& operator=(const SimpleRenderSystem&) = delete;
 
-    void renderGameObjects(VkCommandBuffer commandBuffer, std::vector<VdemGameObject> &gameObjects);
+    void renderGameObjects(
+      VkCommandBuffer commandBuffer, 
+      std::vector<VdemGameObject> &gameObjects,
+      const VdemCamera &camera);
   
   private:
     void createPipelineLayout();

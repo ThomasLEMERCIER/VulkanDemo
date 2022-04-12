@@ -18,6 +18,7 @@ namespace vdem {
     VdemRenderer& operator=(const VdemRenderer&) = delete;
 
     bool isFrameInProgress() const { return isFrameStarted; }
+    float getAspectRatio() const { return swapChain->extentAspectRatio(); }
     VkRenderPass getSwapChainRenderPass() const { return swapChain->getRenderPass(); }
     
     VkCommandBuffer getCurrentCommandBuffer() const { 
