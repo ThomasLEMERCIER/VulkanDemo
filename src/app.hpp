@@ -5,6 +5,7 @@
 #include "device.hpp"
 #include "swap_chain.hpp"
 #include "model.hpp"
+#include "game_object.hpp"
 
 #include <memory>
 
@@ -24,7 +25,7 @@ namespace vdem {
     void run();
 
   private:
-    void loadModel();
+    void loadGameObjects();
     void createPipelineLayout();
     void createPipeline();
     void createCommandBuffers();
@@ -32,6 +33,7 @@ namespace vdem {
     void drawFrame();
     void recreateSwapChain();
     void recordCommandBuffer(uint32_t index);
+    void renderGameObjects(VkCommandBuffer commandBuffer);
 
     VdemWindow window{WIDTH, HEIGHT, "Vulkan Demo"};
     VdemDevice device{window};
@@ -39,6 +41,6 @@ namespace vdem {
     std::unique_ptr<VdemPipeline> pipeline;
     VkPipelineLayout pipelineLayout;
     std::vector<VkCommandBuffer> commandBuffers;
-    std::unique_ptr<VdemModel> model;
+    std::vector<VdemGameObject> gameObjects;
   };
 }
