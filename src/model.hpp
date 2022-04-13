@@ -21,7 +21,12 @@ class VdemModel
       static std::vector<VkVertexInputAttributeDescription> getAttributeDescriptions();
       };
 
-    VdemModel(VdemDevice &device, const std::vector<Vertex> &vertices);
+    struct Builder {
+      std::vector<Vertex> vertices{};
+      std::vector<uint32_t> indices{};
+    };
+
+    VdemModel(VdemDevice &device, const VdemModel::Builder &builder);
     ~VdemModel();
 
     VdemModel(const VdemModel&) = delete;
@@ -32,10 +37,16 @@ class VdemModel
 
   private:
     void createVertexBuffers(const std::vector<Vertex> &vertices);
+    void createIndexBuffers(const std::vector<uint32_t> &indices);
 
     VdemDevice &device;
     VkBuffer vertexBuffer;
     VkDeviceMemory vertexBufferMemory;
     uint32_t vertexCount;
+
+    bool hasIndexBuffer{false};
+    VkBuffer indexBuffer;
+    VkDeviceMemory indexBufferMemory;
+    uint32_t indexCount;
   };
 }
