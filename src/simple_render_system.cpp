@@ -12,7 +12,7 @@
 namespace vdem {
   struct SimplePushConstantsData {
     glm::mat4 transform{1.f};
-    alignas(16) glm::vec3 color;
+    glm::mat4 normalMatrix{1.f};
   };
   
   SimpleRenderSystem::SimpleRenderSystem(VdemDevice &device, VkRenderPass renderPass) : device(device) {
@@ -61,7 +61,7 @@ namespace vdem {
 
     for (auto& obj: gameObjects) {
       SimplePushConstantsData push{};
-      push.color = obj.color;
+      push.normalMatrix = obj.transform.normalMatrix();
       push.transform = projectionView * obj.transform.mat4();
 
       vkCmdPushConstants(

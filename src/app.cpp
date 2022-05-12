@@ -23,14 +23,21 @@ namespace vdem {
   App::~App() {}
 
   void App::loadGameObjects() {
-    std::shared_ptr<VdemModel> model = VdemModel::createModelFromFile(device, "models/colored_cube.obj");
+    std::shared_ptr<VdemModel> smooth_model = VdemModel::createModelFromFile(device, "models/flat_vase.obj");
+    std::shared_ptr<VdemModel> flat_model = VdemModel::createModelFromFile(device, "models/smooth_vase.obj");
 
-    auto cube = VdemGameObject::createGameObject();
-    cube.model = model;
-    cube.transform.translation = {0.f, 0.f, 2.5f};
-    cube.transform.scale = {1.f, 1.f, 1.f};
+    auto smooth_vase = VdemGameObject::createGameObject();
+    smooth_vase.model = smooth_model;
+    smooth_vase.transform.translation = {0.f, 0.f, 2.5f};
+    smooth_vase.transform.scale = {3.f, 3.f, 3.f};
 
-    gameObjects.push_back(std::move(cube));
+    auto flat_vase = VdemGameObject::createGameObject();
+    flat_vase.model = flat_model;
+    flat_vase.transform.translation = {0.f, 0.f, -2.5f};
+    flat_vase.transform.scale = {3.f, 3.f, 3.f};
+
+    gameObjects.push_back(std::move(flat_vase));
+    gameObjects.push_back(std::move(smooth_vase));
   }
 
   void App::run() {
