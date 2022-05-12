@@ -1,6 +1,25 @@
 #include "model.hpp"
+#include "utils.hpp"
+
+#define TINYOBJLOADER_IMPLEMENTATION
+#include <tiny_obj_loader.h>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/hash.hpp>
 
 #include <cassert>
+#include <iostream>
+#include <unordered_map>
+
+namespace std {
+  template <>
+  struct hash<vdem::VdemModel::Vertex> {
+    size_t operator()(const vdem::VdemModel::Vertex& vertex) const {
+      size_t seed = 0;
+      vdem::hash_combine(seed, vertex.position, vertex.color, vertex.normal, vertex.uv);
+      return seed;
+    }
+  };
+}
 
 namespace vdem {
   VdemModel::VdemModel(VdemDevice &device, const VdemModel::Builder &builder) : device{device} {
@@ -16,6 +35,14 @@ namespace vdem {
       vkDestroyBuffer(device.device(), indexBuffer, nullptr);
       vkFreeMemory(device.device(), indexBufferMemory, nullptr);
     }
+  }
+
+  std::unique_ptr<VdemModel> VdemModel::createModelFromFile(VdemDevice &device, const std::string& filepath) {
+    Builder builder{};
+    builder.loadModel(filepath);
+
+    std::cout << "Model has " << builder.vertices.size() << " vertices and " << builder.indices.size() << " indices\n";
+    return std::make_unique<VdemModel>(device, builder);
   }
 
   void VdemModel::createVertexBuffers(const std::vector<Vertex> &vertices) {
@@ -123,5 +150,60 @@ namespace vdem {
     attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;
     attributeDescriptions[1].offset = offsetof(Vertex, color);
     return attributeDescriptions;
+  }
+
+  void VdemModel::Builder::loadModel(const std::string &filepath) {
+    tinyobj::attrib_t attrib;
+    std::vector<tinyobj::shape_t> shapes;
+    std::vector<tinyobj::material_t> materials;
+    std::string err, warn;
+
+    if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, filepath.c_str())) {
+      throw std::runtime_error(warn + err);
+    }
+
+    vertices.clear(); indices.clear();
+    std::unordered_map<Vertex, uint32_t> uniqueVertices{};
+
+    for (const auto &shape : shapes) {
+      for (const auto &index : shape.mesh.indices) {
+        Vertex vertex;
+
+        if (index.vertex_index >= 0) {
+          vertex.position = {
+            attrib.vertices[3 * index.vertex_index + 0],
+            attrib.vertices[3 * index.vertex_index + 1],
+            attrib.vertices[3 * index.vertex_index + 2]
+          };
+
+          vertex.color = {
+            attrib.colors[3 * index.vertex_index + 0],
+            attrib.colors[3 * index.vertex_index + 1],
+            attrib.colors[3 * index.vertex_index + 2]
+          };
+        }
+
+        if (index.normal_index >= 0) {
+          vertex.normal = {
+            attrib.normals[3 * index.normal_index + 0],
+            attrib.normals[3 * index.normal_index + 1],
+            attrib.normals[3 * index.normal_index + 2]
+          };
+        }
+
+        if (index.texcoord_index >= 0) {
+          vertex.uv = {
+            attrib.texcoords[2 * index.texcoord_index + 0],
+            1.f - attrib.texcoords[2 * index.texcoord_index + 1]
+          };
+        }
+
+        if (uniqueVertices.count(vertex) == 0) {
+          uniqueVertices[vertex] = static_cast<uint32_t>(vertices.size());
+          vertices.push_back(vertex);
+        }
+        indices.push_back(uniqueVertices[vertex]);
+      }
+    }
   }
 }

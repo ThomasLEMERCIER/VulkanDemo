@@ -15,11 +15,13 @@ set(Vulkan_LIBRARIES "${VULKAN_SDK_PATH}/Lib")
 set(GLFW_INCLUDE_DIRS "${GLFW_PATH}/include")
 set(GLFW_LIB "${GLFW_PATH}/lib-mingw-w64")
 
+set(TINYOBJ_PATH "external/tinyobjloader")
+
 file(GLOB_RECURSE SOURCES ${PROJECT_SOURCE_DIR}/src/*.cpp)
 add_executable(${PROJECT_NAME} ${SOURCES})
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${Vulkan_INCLUDE_DIRS} ${GLFW_INCLUDE_DIRS} ${GLM_INCLUDE_DIRS})
+target_include_directories(${PROJECT_NAME} PUBLIC ${Vulkan_INCLUDE_DIRS} ${GLFW_INCLUDE_DIRS} ${GLM_INCLUDE_DIRS} ${TINYOBJ_PATH})
 target_link_directories(${PROJECT_NAME} PUBLIC ${Vulkan_LIBRARIES} ${GLFW_LIB})
 
 target_link_libraries(${PROJECT_NAME} glfw3 vulkan-1)

@@ -8,6 +8,9 @@ Release/
 # Shaders
 *.spv
 
+# Models files
+*.obj
+
 # Prerequisites
 *.d
 
